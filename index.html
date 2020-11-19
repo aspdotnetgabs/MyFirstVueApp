@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+</head>
+<body>
+    <div id="app">
+        <h1>{{appTitle}}</h1>
+
+        <button class="btn btn-primary" @click="getSongs()">Refresh Songs</button>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th v-for="header in headers">{{header}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="song in songItems">
+                    <td>{{song.id}}</td>
+                    <td>{{song.title}}</td>
+                    <td>{{song.artist}}</td>
+                    <td>{{song.genre}}</td>
+                </tr>
+            </tbody>
+            
+        </table>
+    </div>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios.min.js"></script>
+    <script>
+        var songApp = new Vue({
+            el: "#app",
+            data: {
+                baseUrl: "http://bernardgabon.somee.com",
+                appTitle: "Song Collection",
+                headers: ["Id", "Title", "Artist", "Genre"],
+                songItems: [],
+                babyName: "Angel"
+            },
+            methods: {
+                getSongs: function() {
+                    axios.get(this.baseUrl + "/api/Song")
+                        .then(response => {
+                            this.songItems = response.data;
+                        });
+                }
+            },
+            mounted: function() {
+                this.getSongs();
+            }
+        })
+    </script>
+</body>
+</html>
