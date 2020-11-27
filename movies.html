@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Open Movie Database</title>
+
     <link rel="stylesheet" href="css/bootstrap.css">
-    <!-- Movie Card CSS -->
 
 </head>
 <body>
@@ -106,7 +106,7 @@
     <script src="js/vue.js"></script>
     <script src="js/axios.min.js"></script>
     <script>
-        var songApp = new Vue({
+        var openMovieApp = new Vue({
             el: "#app",
             data: {
                 baseUrl: "http://www.omdbapi.com",
@@ -117,7 +117,7 @@
             methods: {
                 getMovie: function() {
                     let movieId = "tt0499549"; // Avatar - James Cameron
-                    axios.get( this.baseUrl + "?apikey=" + this.apiKey + "&i=" + movieId)
+                    axios.get(this.baseUrl + "?apikey=" + this.apiKey + "&i=" + movieId)
                         .then(response => {
                             this.movie = response.data;
                         });
