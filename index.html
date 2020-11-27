@@ -74,7 +74,8 @@
                                 <input type="text" v-model="searchKeyword">
                                 <button class="btn btn-success" @click="getSongsBySearch()">Search</button>
 
-                                <div class="table-responsive">
+                                <div class="table-responsive" v-if="viewMode === 'listMode'">
+                                    <button class="btn btn-secondary" @click="changedViewMode('addMode')">Add New Song</button>
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
@@ -87,18 +88,22 @@
                                                 <td>{{song.title}}</td>
                                                 <td>{{song.artist}}</td>
                                                 <td>{{song.genre}}</td>
+                                                <td>
+                                                    <button class="btn btn-outline-danger btn-sm" @click="deleteSong(song.id)">❌</button>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
 
-                                <div>
+                                <div class="card" v-if="viewMode === 'addMode'">
                                     <h2>Add New Song</h2>
                                     <input type="text" v-model="newSong.title" placeholder="Title"><br>
                                     <input type="text" v-model="newSong.artist" placeholder="Artist"><br>
                                     <input type="text" v-model="newSong.genre" placeholder="Genre"><br>
                                     <input type="text" v-model="newSong.recordLabel" placeholder="Record Label"><br>
                                     <button class="btn btn-success" @click="postSong()">Add Song</button>
+                                    <button class="btn btn-secondary" @click="changedViewMode('listMode')">Cancel</button>
                                 </div>
 
                             </div>
@@ -122,7 +127,7 @@
                 data: {
                     baseUrl: "https://bernardgabon.somee.com",
                     appTitle: "Song Collection",
-                    headers: ["Id", "Title", "Artist", "Genre"],
+                    headers: ["Id", "Title", "Artist", "Genre", "Actions"],
                     songItems: [],
                     babyName: "Angel",
                     searchKeyword: "",
@@ -135,7 +140,8 @@
                         "releaseYear": 0,
                         "recordLabel": "",
                         "peakChartPosition": 0
-                    }
+                    },
+                    viewMode: "listMode"
                 },
                 methods: {
                     getSongs: function() {
@@ -155,13 +161,27 @@
                         axios.post(this.baseUrl + "/api/Song", this.newSong)
                             .then(response => {
                                 let songId = response.data;
-                                alert("The new song ID is " + songId)
+                                alert("The new song ID is " + songId);
+                                this.changedViewMode("listMode");
                             });
 
+                    },
+                    deleteSong: function(songId) {
+                        let deleteContinue = confirm("Are you sure you want to delete song Id " + songId + "?");
+                        if(!deleteContinue) return;
+
+                        axios.delete(this.baseUrl + "/api/Song/" + songId)
+                            .then(response => {
+                                // this.getSongs();
+                                alert('Deleted successfully.');
+                            })
+                    },
+                    changedViewMode: function(vm) {
+                        this.viewMode = vm;
                     }
                 },
                 mounted: function() {
-                    // this.getSongs();
+                   this.getSongs();
                 }
             })
         </script>
